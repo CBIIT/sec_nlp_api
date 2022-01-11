@@ -3,6 +3,7 @@ import logging
 import celery
 import pickle
 
+from os.path import exists
 from flask import Flask, render_template, g
 from flask_socketio import SocketIO
 # from flask_caching import Cache
@@ -18,11 +19,12 @@ socketio = SocketIO()
 
 
 def open_pickled():
-    with open("PhraseMatcher.nlp", "rb") as matcherFile:
-        try:
-            return pickle.load(matcherFile)
-        except FileNotFoundError as err:
-            raise err
+    if exists("PhraseMatcher.nlp"):
+        with open("PhraseMatcher.nlp", "rb") as matcherFile:
+            try:
+                return pickle.load(matcherFile)
+            except FileNotFoundError as err:
+                raise err
 
 global_matcher = open_pickled()
 

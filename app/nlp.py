@@ -18,7 +18,6 @@ def get_matcher():
                 g.nlp_matcher = pickle.load(matcherFile)
             except FileNotFoundError as err:
                 click.echo("Please initialize the PhraseMatcher.")
-                raise err
     return g.nlp_matcher
 
 def clear_nlp(e=None):
