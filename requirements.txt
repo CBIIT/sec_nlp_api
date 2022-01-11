@@ -3,7 +3,6 @@ bidict==0.21.4
 billiard==3.6.4.0
 blis==0.7.5
 catalogue==2.0.6
-celery==5.2.1
 certifi==2021.10.8
 charset-normalizer==2.0.9
 click==8.0.3
@@ -13,9 +12,8 @@ click-repl==0.2.0
 cymem==2.0.6
 Deprecated==1.2.13
 dnspython==2.1.0
-eventlet==0.25.1
+eventlet==0.33.0
 Flask==2.0.2
-Flask-Caching==1.10.1
 Flask-SocketIO==5.1.1
 greenlet==1.1.2
 h11==0.12.0

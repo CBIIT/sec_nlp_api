@@ -1,22 +1,16 @@
 import os
 import logging
-import celery
 import pickle
 
 from os.path import exists
 from flask import Flask, render_template, g
 from flask_socketio import SocketIO
-# from flask_caching import Cache
-from celery import Celery
 from config import Config
 
 from flask.logging import default_handler
 from logging.handlers import RotatingFileHandler
 
-celery = Celery(__name__, broker=Config.CELERY_BROKER_URL, backend=Config.RESULT_BACKEND)
 socketio = SocketIO()
-# cache = Cache(config={'CACHE_TYPE': 'RedisCache'})
-
 
 def open_pickled():
     if exists("PhraseMatcher.nlp"):
@@ -35,7 +29,6 @@ def create_app() -> Flask:
     app.config['SECRET_KEY'] = 'secretjsidfjsidfjsdifjsdifj!'
     app.config.from_object(CONFIG_TYPE)
 
-    celery.conf.update(app.config)
 
     register_db(app)
 
@@ -52,7 +45,6 @@ def create_app() -> Flask:
     configure_spacy(app)
 
     socketio.init_app(app)
-    # cache.init_app(app)
 
     return app
 

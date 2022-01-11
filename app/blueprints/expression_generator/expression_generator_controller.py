@@ -1,6 +1,5 @@
 from flask import render_template, request, redirect, url_for, current_app, abort
 from werkzeug.utils import secure_filename
-from app.tasks import add_together
 from . import expression_blueprint
 
 # PUT /expresion_generator/add
@@ -15,8 +14,3 @@ def post():
     f = request.files['file']
     f.save(secure_filename(f.filename))
     return redirect(url_for('expression_generator.get'))
-
-@expression_blueprint.route('/add', methods=['GET'])
-def add():
-    results = add_together.apply_async(args=[34, 23])
-    return results
