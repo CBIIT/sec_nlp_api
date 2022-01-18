@@ -1,4 +1,3 @@
-from app import tasks
 from . import main_blueprint
 from flask import render_template, request, redirect, url_for, current_app, abort
 
