@@ -31,10 +31,17 @@ class TokenizerHelper:
             for span in filtered_spans:
                 db_cursor.execute(self.get_best_ncit_code_sql_for_span(), [span.text])
                 db_codes = db_cursor.fetchall()
-                if db_codes:
+                if len(db_codes) > 0:
                     code_dict = {}
                     code_dict[span.text] = [ dict(db_code)['code'] for db_code in db_codes ]
                     c_codes.append(code_dict)
+                else:
+                    db_cursor.execute(self.get_ncit_code_sql_for_span(), [span.text])
+                    rcodes = db_cursor.fetchall()
+                    if rcodes:
+                        code_dict = {}
+                        code_dict[span.text] = [ dict(db_code)['code'] for db_code in rcodes ]
+                        c_codes.append(code_dict)
         return c_codes
 
     def build_spans(self, matches: List, search_document: Doc) -> Union[List, None]:
@@ -61,4 +68,10 @@ class TokenizerHelper:
         return """
         select code from ncit where lower(pref_name) = ? and 
         lower(pref_name) not in ('i', 'ii', 'iii', 'iv', 'v', 'set', 'all', 'at', 'is', 'and', 'or', 'to', 'a', 'be', 'for', 'an', 'as', 'in', 'of', 'x', 'are', 'no', 'any', 'on', 'who', 'have', 't', 'who', 'at') 
+        """
+    
+    def get_ncit_code_sql_for_span(self) -> str:
+        return """
+        select distinct code from ncit_syns where l_syn_name = ? and
+        l_syn_name not in ('i', 'ii', 'iii', 'iv', 'v', 'set', 'all' , 'at', 'is', 'and', 'or', 'to', 'a', 'be', 'for', 'an', 'as', 'in', 'of', 'x', 'are', 'no', 'any', 'on', 'who', 'have', 't', 'who', 'at') 
         """
