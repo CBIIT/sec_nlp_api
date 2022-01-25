@@ -41,6 +41,9 @@ def init_nlp():
         '''
         cur.execute(sql)
         records = cur.fetchall()
+        ncit_syns_sql = '''select code, l_syn_name from ncit_syns'''
+        cur.execute(ncit_syns_sql)
+        records.extend(cur.fetchall())
         code_synonym_set = set() # []
         for record in records:
             code = record[0]
