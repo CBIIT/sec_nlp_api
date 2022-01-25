@@ -5,6 +5,7 @@ from app.nlp import get_matcher, get_nlp
 from spacy.util import filter_spans
 from spacy.tokens.doc import Doc
 from typing import List, Set, Union
+from sqlite3 import OperationalError
 
 class TokenizerHelper:
 
@@ -26,22 +27,25 @@ class TokenizerHelper:
 
     def get_associated_codes(self, filtered_spans: Set) -> List:
         c_codes = []
-        if filtered_spans:
-            db_cursor = get_db().cursor()
-            for span in filtered_spans:
-                db_cursor.execute(self.get_best_ncit_code_sql_for_span(), [span.text])
-                db_codes = db_cursor.fetchall()
-                if len(db_codes) > 0:
-                    code_dict = {}
-                    code_dict[span.text] = [ dict(db_code)['code'] for db_code in db_codes ]
-                    c_codes.append(code_dict)
-                else:
-                    db_cursor.execute(self.get_ncit_code_sql_for_span(), [span.text])
-                    rcodes = db_cursor.fetchall()
-                    if rcodes:
+        try:
+            if filtered_spans:
+                db_cursor = get_db().cursor()
+                for span in filtered_spans:
+                    db_cursor.execute(self.get_best_ncit_code_sql_for_span(), [span.text])
+                    db_codes = db_cursor.fetchall()
+                    if len(db_codes) > 0:
                         code_dict = {}
-                        code_dict[span.text] = [ dict(db_code)['code'] for db_code in rcodes ]
+                        code_dict[span.text] = [ dict(db_code)['code'] for db_code in db_codes ]
                         c_codes.append(code_dict)
+                    else:
+                        db_cursor.execute(self.get_ncit_code_sql_for_span(), [span.text])
+                        rcodes = db_cursor.fetchall()
+                        if rcodes:
+                            code_dict = {}
+                            code_dict[span.text] = [ dict(db_code)['code'] for db_code in rcodes ]
+                            c_codes.append(code_dict)
+        except OperationalError as error:
+            current_app.logger.info(f"get associated codes in TokenizerHelper failed with error #{error}")
         return c_codes
 
     def build_spans(self, matches: List, search_document: Doc) -> Union[List, None]:
