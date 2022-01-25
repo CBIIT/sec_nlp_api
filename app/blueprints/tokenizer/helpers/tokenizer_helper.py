@@ -45,7 +45,7 @@ class TokenizerHelper:
                             code_dict[span.text] = [ dict(db_code)['code'] for db_code in rcodes ]
                             c_codes.append(code_dict)
         except OperationalError as error:
-            current_app.logger.info(f"get associated codes in TokenizerHelper failed with error #{error}")
+            current_app.logger.error(f"get associated codes in TokenizerHelper failed with error #{error}")
         return c_codes
 
     def build_spans(self, matches: List, search_document: Doc) -> Union[List, None]:
