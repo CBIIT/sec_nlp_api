@@ -6,6 +6,7 @@ from .models.code import Codes
 from .helpers.tokenizer_helper import TokenizerHelper
 from app.nlp import get_matcher
 
+# This module is for the websocket connections
 
 @socketio.on('connect')
 def join(message):

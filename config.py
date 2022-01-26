@@ -21,22 +21,17 @@ class Config:
     # Settings applicable to all environments
     SECRET_KEY = os.getenv('SECRET_KEY', default='A very terrible secret key.')
 
-    CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379')
-    RESULT_BACKEND = os.getenv('RESULT_BACKEND', 'redis://localhost:6379')
-    CACHE_TYPE = "SimpleCache"
-    CACHE_DEFAULT_TIMEOUT = 300
-
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.path.join(basedir, 'nci_api.sqlite')
+    SQLITE_DATABASE_URI = os.path.join(basedir, 'nci_api.sqlite')
 
 class TestingConfig(Config):
     TESTING = True
     WTF_CSRF_ENABLED = False
     MAIL_SUPPRESS_SEND = True
-    SQLALCHEMY_DATABASE_URI = os.path.join(basedir, 'test.sqlite')
+    SQLITE_DATABASE_URI = os.path.join(basedir, 'test.sqlite')
 
 
 class ProductionConfig(Config):
     FLASK_ENV = 'production'
-    SQLALCHEMY_DATABASE_URI = os.getenv('PROD_DATABASE_URl', default=os.path.join(basedir, 'prod.sqlite'))
+    SQLITE_DATABASE_URI = os.getenv('PROD_DATABASE_URl', default=os.path.join(basedir, 'prod.sqlite'))

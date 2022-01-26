@@ -4,6 +4,8 @@ from .models.code import Codes
 from .helpers.tokenizer_helper import TokenizerHelper
 from app import global_matcher
 
+# [POST] /tokenizer
+
 @tokenizer_blueprint.route('', methods=['POST'])
 def post():
     content = request.get_json()

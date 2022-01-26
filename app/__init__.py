@@ -59,11 +59,11 @@ def register_nlp(app):
     init_app(app)
 
 def register_blueprints(app):
-    from app.blueprints.main import main_blueprint
+    # from app.blueprints.main import main_blueprint
     # from app.blueprints.expression_generator import expression_blueprint
     from app.blueprints.tokenizer import tokenizer_blueprint
 
-    app.register_blueprint(main_blueprint)
+    # app.register_blueprint(main_blueprint)
     # app.register_blueprint(expression_blueprint, url_prefix='/expression_generator')
     app.register_blueprint(tokenizer_blueprint, url_prefix='/tokenizer')
 
