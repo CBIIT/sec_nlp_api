@@ -1,7 +1,7 @@
 import sqlite3
 from flask import current_app
 from typing import Union, Any
-from app.db.abstract_database import AbstractDatabase
+from app.databases.abstract_database import AbstractDatabase
 
 class SqliteDb(AbstractDatabase):
 
