@@ -24,6 +24,9 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLITE_DATABASE_URI = os.path.join(basedir, 'nci_api.sqlite')
+    POSTGRESQL_URI = 'host:port'
+    POSTGRESQL_DATABASE_NAME = 'dbname'
+    POSTGRESQL_PASSWORD = 'password'
 
 class TestingConfig(Config):
     TESTING = True
