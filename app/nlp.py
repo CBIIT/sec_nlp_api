@@ -31,19 +31,17 @@ def clear_matcher(e=None):
         matcher = None
 
 def init_nlp():
+    print("Starting")
     nlp = get_nlp()
     with current_app.app_context():
         db = get_db()
-        cur = db.cursor()
         sql = '''select code, synonyms from ncit
         where (concept_status is null or (concept_status not like '%Obsolete%' and concept_status not like '%Retired%') ) 
         /* and (lower(synonyms) like '%chemotherapy%' or lower(synonyms) like '%ecog%' or lower(synonyms) like '%white blood cell%') */
         '''
-        cur.execute(sql)
-        records = cur.fetchall()
+        records = db.get(sql)
         ncit_syns_sql = '''select code, l_syn_name from ncit_syns'''
-        cur.execute(ncit_syns_sql)
-        records.extend(cur.fetchall())
+        records.extend(db.get(ncit_syns_sql))
         code_synonym_set = set() # []
         for record in records:
             code = record[0]

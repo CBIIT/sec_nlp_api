@@ -9,10 +9,11 @@ class PostgresDb(AbstractDatabase):
     def __init__(self) -> None:
         super().__init__()
         self.db = psycopg2.connect(
-            host=current_app.config["POSTGRESQL_URI"],
+            host=current_app.config["POSTGRESQL_HOST"],
+            port=current_app.config["POSTGRESQL_PORT"],
             database=current_app.config["POSTGRESQL_DATABASE_NAME"],
-            password=current_app.config["POSTGRESQL_PASSWORD"],
-            # user=''
+            user=current_app.config['POSTGRESQL_USERNAME'],
+            password=current_app.config["POSTGRESQL_PASSWORD"]
         )
 
     def get(self, query: str) -> Union[Any, None]:
