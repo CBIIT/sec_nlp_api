@@ -1,3 +1,4 @@
+from sqlite3 import Cursor
 import psycopg2
 from flask import current_app
 from typing import Union, Any
@@ -15,6 +16,9 @@ class PostgresDb(AbstractDatabase):
             user=current_app.config['POSTGRESQL_USERNAME'],
             password=current_app.config["POSTGRESQL_PASSWORD"]
         )
+
+    def cursor(self) -> psycopg2.cursor:
+        return self.db.cursor()
 
     def get(self, query: str) -> Union[Any, None]:
         with self.db.cursor() as cursor:
