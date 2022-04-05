@@ -11,6 +11,14 @@ class AbstractDatabase(ABC):
     def close(self):
         raise NotImplementedError
 
+    @abstractmethod
+    def safe_sql(self, query: str) -> str:
+        raise NotImplementedError
+
+    @abstractmethod
+    def cursor(self) -> Any:
+        raise NotImplementedError
+
     def __enter__(self):
         return self
 

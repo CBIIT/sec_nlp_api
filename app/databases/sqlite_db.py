@@ -26,5 +26,8 @@ class SqliteDb(AbstractDatabase):
         self.cursor: sqlite3.Cursor = self.connection.cursor()
         return self
 
+    def safe_sql(self, query: str) -> str:
+        return query
+
     def close(self) -> None:
         self.connection.close()

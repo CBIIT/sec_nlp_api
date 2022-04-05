@@ -17,13 +17,18 @@ class PostgresDb(AbstractDatabase):
             password=current_app.config["POSTGRESQL_PASSWORD"]
         )
 
-    def cursor(self) -> psycopg2.cursor:
+    def cursor(self):
         return self.db.cursor()
 
     def get(self, query: str) -> Union[Any, None]:
         with self.db.cursor() as cursor:
             cursor.execute(query)
             return cursor.fetchall()
+
+    def safe_sql(self, query: str) -> Union[str, None]:
+        if query:
+            query = query.replace('?', '%s')
+        return query
 
     def close(self):
         self.db.close()
