@@ -31,7 +31,6 @@ def clear_matcher(e=None):
         matcher = None
 
 def init_nlp():
-    print("Starting")
     nlp = get_nlp()
     with current_app.app_context():
         db = get_db()
@@ -61,6 +60,7 @@ def init_nlp():
 @with_appcontext
 def init_nlp_command():
     """Clear existing data and create new file."""
+    click.echo("Initializing nlp....Please wait.")
     init_nlp()
     click.echo("Initialized the nlp.")
 

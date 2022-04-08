@@ -39,6 +39,12 @@ class Code:
 
     def __post_init__(self):
         self.remove_duplicates_from_display()
+        self.remove_words_three_characters_or_less()
+
+    def remove_words_three_characters_or_less(self):
+        if self.display:
+            words = self.display.split(' ')
+            self.display = ' '.join([word for word in words if len(word) > 3])
 
     def remove_duplicates_from_display(self):
         if self.display:

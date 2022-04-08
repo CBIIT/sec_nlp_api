@@ -76,12 +76,32 @@ class TokenizerHelper:
 
     def get_best_ncit_code_sql_for_span(self) -> str:
         return """
-        select code from ncit where lower(pref_name) = %s and 
-        lower(pref_name) not in ('i', 'ii', 'iii', 'iv', 'v', 'set', 'all', 'at', 'is', 'and', 'or', 'to', 'a', 'be', 'for', 'an', 'as', 'in', 'of', 'x', 'are', 'no', 'any', 'on', 'who', 'have', 't', 'who', 'at') 
+            select code from ncit where code not in (select descendant from ncit_tc where parent in ('C25709')) 
+            and lower(pref_name) = ? 
+            and lower(pref_name) not in ('i', 'ii', 'iii', 'iv', 'v', 'set', 'all', 'at', 'is', 'and', 'or', 'to', 'a', 'be', 'for', 'an', 'as', 'in', 'of', 'x', 'are', 'no', 'any', 'on', 'who', 'have', 't', 'who', 'at')
         """
-    
+        # return """
+        #     select distinct a.code from ncit a inner join ncit_tc b on a.code = b.descendant where lower(a.pref_name) = ? and
+        #     lower(a.pref_name) not in ('i', 'ii', 'iii', 'iv', 'v', 'set', 'all', 'at', 'is', 'and', 'or', 'to', 'a', 'be', 'for', 'an', 'as', 'in', 'of', 'x', 'are', 'no', 'any', 'on', 'who', 'have', 't', 'who', 'at') and
+        #     b.parent not in ('C25709')
+        # """
+        # return """
+        # select code from ncit where lower(pref_name) = ? and 
+        # lower(pref_name) not in ('i', 'ii', 'iii', 'iv', 'v', 'set', 'all', 'at', 'is', 'and', 'or', 'to', 'a', 'be', 'for', 'an', 'as', 'in', 'of', 'x', 'are', 'no', 'any', 'on', 'who', 'have', 't', 'who', 'at') 
+        # """
+
     def get_ncit_code_sql_for_span(self) -> str:
         return """
-        select distinct code from ncit_syns where l_syn_name = %s and
-        l_syn_name not in ('i', 'ii', 'iii', 'iv', 'v', 'set', 'all' , 'at', 'is', 'and', 'or', 'to', 'a', 'be', 'for', 'an', 'as', 'in', 'of', 'x', 'are', 'no', 'any', 'on', 'who', 'have', 't', 'who', 'at') 
+            select distinct code from ncit_syns where code not in (select descendant from ncit_tc where parent in ('C25709'))
+            and l_syn_name = ? 
+            and l_syn_name not in ('i', 'ii', 'iii', 'iv', 'v', 'set', 'all', 'at', 'is', 'and', 'or', 'to', 'a', 'be', 'for', 'an', 'as', 'in', 'of', 'x', 'are', 'no', 'any', 'on', 'who', 'have', 't', 'who', 'at')
         """
+        # return """
+        #     select distinct a.code from ncit_syns a inner join ncit_tc b on a.code = b.descendant where a.l_syn_name = ? and
+        #     a.l_syn_name not in ('i', 'ii', 'iii', 'iv', 'v', 'set', 'all' , 'at', 'is', 'and', 'or', 'to', 'a', 'be', 'for', 'an', 'as', 'in', 'of', 'x', 'are', 'no', 'any', 'on', 'who', 'have', 't', 'who', 'at') and
+        #     b.parent not in ('C25709')
+        # """
+        # return """
+        # select distinct code from ncit_syns where l_syn_name = ? and
+        # l_syn_name not in ('i', 'ii', 'iii', 'iv', 'v', 'set', 'all' , 'at', 'is', 'and', 'or', 'to', 'a', 'be', 'for', 'an', 'as', 'in', 'of', 'x', 'are', 'no', 'any', 'on', 'who', 'have', 't', 'who', 'at') 
+        # """        
