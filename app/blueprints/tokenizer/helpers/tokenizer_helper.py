@@ -31,7 +31,7 @@ class TokenizerHelper:
             if filtered_spans:
                 db_cursor = get_db().cursor()
                 for span in filtered_spans:
-                    db_cursor.execute(self.get_best_ncit_code_sql_for_span(), [span.text])
+                    db_cursor.execute(get_db().safe_sql(self.get_best_ncit_code_sql_for_span()), [span.text])
                     db_codes = db_cursor.fetchall()
                     if len(db_codes) > 0:
                         code_dict = {}
@@ -41,7 +41,7 @@ class TokenizerHelper:
                         # code_dict[span.text] = [ dict(db_code)['code'] for db_code in db_codes ]
                         c_codes.append(code_dict)
                     else:
-                        db_cursor.execute(self.get_ncit_code_sql_for_span(), [span.text])
+                        db_cursor.execute(get_db().safe_sql(self.get_ncit_code_sql_for_span()), [span.text])
                         rcodes = db_cursor.fetchall()
                         if rcodes:
                             code_dict = {}

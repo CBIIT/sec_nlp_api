@@ -22,7 +22,7 @@ class PostgresDb(AbstractDatabase):
 
     def get(self, query: str) -> Union[Any, None]:
         with self.db.cursor() as cursor:
-            cursor.execute(query)
+            cursor.execute(self.safe_sql(query))
             return cursor.fetchall()
 
     def safe_sql(self, query: str) -> Union[str, None]:
