@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from dataclasses import dataclass, is_dataclass
 
@@ -40,6 +40,23 @@ class Code:
     def __post_init__(self):
         self.remove_duplicates_from_display()
         self.remove_words_three_characters_or_less()
+        self.remove_number_strings()
+        self.remove_units_of_messurements()
+
+    def remove_units_of_messurements(self):
+        if self.display:
+            # Still an issue with things like 100MG
+            special_messurements = [
+                'unt/ml', 'ml', '/ml', 'hr',
+                'mg', 'lf'
+            ]
+            words = self.display.split(' ')
+            self.display = ' '.join([word for word in words if word not in special_messurements ])
+
+    def remove_number_strings(self):
+        if self.display:
+            words = self.display.split(' ')
+            self.display = ' '.join([word for word in words if not word.isnumeric()])
 
     def remove_words_three_characters_or_less(self):
         if self.display:

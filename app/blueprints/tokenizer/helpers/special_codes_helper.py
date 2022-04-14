@@ -1,0 +1,9 @@
+from enum import Enum
+
+class SpecialCCodes(Enum):
+
+    CURRENT_MEDICATION = "'C156818'"
+    NEOPLASM = "'C3262', 'C6283', 'C88025'"
+    UNIT_OF_MEASURE_TREE = "'C25709'"
+    PYSICAL_FEELINGS_QUESTION_TREE = "'C173219'"
+    PERSONAL_ATTRIBUTE_TREE = "'C19332'"

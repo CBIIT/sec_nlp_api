@@ -6,6 +6,7 @@ from spacy.util import filter_spans
 from spacy.tokens.doc import Doc
 from typing import List, Set, Union
 from sqlite3 import OperationalError
+from app.blueprints.tokenizer.helpers.special_codes_helper import SpecialCCodes
 
 class TokenizerHelper:
 
@@ -75,15 +76,37 @@ class TokenizerHelper:
         return None
 
     def get_best_ncit_code_sql_for_span(self) -> str:
-        return """
-            select code from ncit where code not in (select descendant from ncit_tc where parent in ('C25709')) 
-            and lower(pref_name) = ? 
+        return f"""
+            select code from ncit where code not in (
+                select descendant from ncit_tc where parent in (
+                    {SpecialCCodes.UNIT_OF_MEASURE_TREE.value}, 
+                    {SpecialCCodes.PYSICAL_FEELINGS_QUESTION_TREE.value},
+                    {SpecialCCodes.PERSONAL_ATTRIBUTE_TREE.value}
+                    )
+                ) 
+            and lower(pref_name) = ?
+            and code not in ({SpecialCCodes.NEOPLASM.value}, {SpecialCCodes.CURRENT_MEDICATION.value})
             and lower(pref_name) not in ('i', 'ii', 'iii', 'iv', 'v', 'set', 'all', 'at', 'is', 'and', 'or', 'to', 'a', 'be', 'for', 'an', 'as', 'in', 'of', 'x', 'are', 'no', 'any', 'on', 'who', 'have', 't', 'who', 'at')
         """
+        # return """
+        # select code from ncit where lower(pref_name) = ? and 
+        # lower(pref_name) not in ('i', 'ii', 'iii', 'iv', 'v', 'set', 'all', 'at', 'is', 'and', 'or', 'to', 'a', 'be', 'for', 'an', 'as', 'in', 'of', 'x', 'are', 'no', 'any', 'on', 'who', 'have', 't', 'who', 'at') 
+        # """
 
     def get_ncit_code_sql_for_span(self) -> str:
-        return """
-            select distinct code from ncit_syns where code not in (select descendant from ncit_tc where parent in ('C25709'))
-            and l_syn_name = ? 
+        return f"""
+            select distinct code from ncit_syns where code not in (
+                select descendant from ncit_tc where parent in (
+                    {SpecialCCodes.UNIT_OF_MEASURE_TREE.value}, 
+                    {SpecialCCodes.PYSICAL_FEELINGS_QUESTION_TREE.value},
+                    {SpecialCCodes.PERSONAL_ATTRIBUTE_TREE.value}
+                    )
+                )
+            and l_syn_name = ?
+            and code not in ({SpecialCCodes.NEOPLASM.value}, {SpecialCCodes.CURRENT_MEDICATION.value})
             and l_syn_name not in ('i', 'ii', 'iii', 'iv', 'v', 'set', 'all', 'at', 'is', 'and', 'or', 'to', 'a', 'be', 'for', 'an', 'as', 'in', 'of', 'x', 'are', 'no', 'any', 'on', 'who', 'have', 't', 'who', 'at')
         """
+        # return """
+        # select distinct code from ncit_syns where l_syn_name = ? and
+        # l_syn_name not in ('i', 'ii', 'iii', 'iv', 'v', 'set', 'all' , 'at', 'is', 'and', 'or', 'to', 'a', 'be', 'for', 'an', 'as', 'in', 'of', 'x', 'are', 'no', 'any', 'on', 'who', 'have', 't', 'who', 'at') 
+        # """
