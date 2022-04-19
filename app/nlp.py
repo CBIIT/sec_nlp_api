@@ -1,5 +1,7 @@
+from nis import match
 import click
-import pickle
+import _pickle as cPickle
+import bz2
 from spacy import blank
 from spacy.matcher import PhraseMatcher
 from flask import (current_app, g)
@@ -13,9 +15,9 @@ def get_nlp():
 
 def get_matcher():
     if "nlp_matcher" not in g:
-        with open("PhraseMatcher.nlp", "rb") as matcherFile:
+        with bz2.BZ2File("PhraseMatcher.nlp.pbz2", "rb") as matcherFile:
             try:
-                g.nlp_matcher = pickle.load(matcherFile)
+                g.nlp_matcher = cPickle.load(matcherFile)
             except FileNotFoundError as err:
                 click.echo("Please initialize the PhraseMatcher.")
     return g.nlp_matcher
@@ -53,8 +55,8 @@ def init_nlp():
             patterns.append(nlp.make_doc(v[1]))
         matcher = PhraseMatcher(nlp.vocab, attr='LOWER')
         matcher.add("TerminologyList", patterns)
-        with open('PhraseMatcher.nlp', 'wb') as pickler:
-            pickle.dump(matcher, pickler, protocol=pickle.HIGHEST_PROTOCOL)
+        with bz2.BZ2File('PhraseMatcher.nlp.pbz2', 'w') as pickler:
+            cPickle.dump(matcher, pickler)
 
 @click.command("init-nlp")
 @with_appcontext
