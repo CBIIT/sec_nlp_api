@@ -15,7 +15,7 @@ def get_nlp():
 
 def get_matcher():
     if "nlp_matcher" not in g:
-        with bz2.BZ2File("PhraseMatcher.nlp.pbz2", "rb") as matcherFile:
+        with bz2.BZ2File(current_app.config['NLP_PICKLE_FILE_NAME'], "rb") as matcherFile:
             try:
                 g.nlp_matcher = cPickle.load(matcherFile)
             except FileNotFoundError as err:
@@ -55,7 +55,7 @@ def init_nlp():
             patterns.append(nlp.make_doc(v[1]))
         matcher = PhraseMatcher(nlp.vocab, attr='LOWER')
         matcher.add("TerminologyList", patterns)
-        with bz2.BZ2File('PhraseMatcher.nlp.pbz2', 'w') as pickler:
+        with bz2.BZ2File(current_app.config['NLP_PICKLE_FILE_NAME'], 'w') as pickler:
             cPickle.dump(matcher, pickler)
 
 @click.command("init-nlp")

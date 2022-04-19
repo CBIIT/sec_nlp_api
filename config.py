@@ -20,6 +20,7 @@ class Config:
 
     # Settings applicable to all environments
     SECRET_KEY = os.getenv('SECRET_KEY', default='A very terrible secret key.')
+    NLP_PICKLE_FILE_NAME = 'PhraseMatcher.pickle.bz2'
 
 class DevelopmentConfig(Config):
     DEBUG = True

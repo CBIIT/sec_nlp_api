@@ -1,7 +1,8 @@
 import os
 import logging
-import pickle
+import _pickle as cPickle
 
+from bz2 import BZ2File
 from os.path import exists
 from flask import Flask, render_template, g
 from flask_socketio import SocketIO
@@ -13,10 +14,10 @@ from logging.handlers import RotatingFileHandler
 socketio = SocketIO()
 
 def open_pickled():
-    if exists("PhraseMatcher.nlp"):
-        with open("PhraseMatcher.nlp", "rb") as matcherFile:
+    if exists(Config.NLP_PICKLE_FILE_NAME):
+        with BZ2File(Config.NLP_PICKLE_FILE_NAME, "rb") as matcherFile:
             try:
-                return pickle.load(matcherFile)
+                return cPickle.load(matcherFile)
             except FileNotFoundError as err:
                 raise err
 
@@ -26,7 +27,7 @@ def create_app() -> Flask:
     app = Flask(__name__)
 
     CONFIG_TYPE = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
-    app.config['SECRET_KEY'] = 'secretjsidfjsidfjsdifjsdifj!'
+    app.config['SECRET_KEY'] = Config.SECRET_KEY
     app.config.from_object(CONFIG_TYPE)
 
 

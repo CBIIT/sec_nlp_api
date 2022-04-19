@@ -1,5 +1,6 @@
 # Special files for this project
 *.nlp
+*.pickle.*
 *.pbz2
 
 # Byte-compiled / optimized / DLL files
