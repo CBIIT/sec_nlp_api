@@ -1,21 +1,13 @@
-from sqlite3 import Cursor
-import psycopg2
-from flask import current_app
+from psycopg2 import connect
 from typing import Union, Any
 from app.databases.abstract_database import AbstractDatabase
 
 
 class PostgresDb(AbstractDatabase):
 
-    def __init__(self) -> None:
+    def __init__(self, connection: connect) -> None:
         super().__init__()
-        self.db = psycopg2.connect(
-            host=current_app.config["POSTGRESQL_HOST"],
-            port=current_app.config["POSTGRESQL_PORT"],
-            database=current_app.config["POSTGRESQL_DATABASE_NAME"],
-            user=current_app.config['POSTGRESQL_USERNAME'],
-            password=current_app.config["POSTGRESQL_PASSWORD"]
-        )
+        self.db = connection
 
     def cursor(self):
         return self.db.cursor()

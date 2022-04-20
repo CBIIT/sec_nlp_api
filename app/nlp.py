@@ -1,13 +1,14 @@
 from nis import match
 import click
 import _pickle as cPickle
-
 from bz2 import BZ2File
 from spacy import blank
 from spacy.matcher import PhraseMatcher
 from flask import (current_app, g)
 from flask.cli import with_appcontext
 from app.db import get_db
+from pickle import dumps as pickle_dumps
+from bz2 import compress as bz2_compress
 
 def get_nlp():
     if "nlp" not in g:
@@ -56,8 +57,8 @@ def init_nlp():
             patterns.append(nlp.make_doc(v[1]))
         matcher = PhraseMatcher(nlp.vocab, attr='LOWER')
         matcher.add("TerminologyList", patterns)
-        with BZ2File(current_app.config['NLP_PICKLE_FILE_NAME'], 'w') as pickler:
-            cPickle.dump(matcher, pickler)
+        compressed_pickled_string = bz2_compress(pickle_dumps(matcher))
+        db.save("insert into nlp_pickle (data) values (?)", compressed_pickled_string)
 
 @click.command("init-nlp")
 @with_appcontext

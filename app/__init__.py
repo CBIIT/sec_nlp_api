@@ -1,25 +1,27 @@
 import os
 import logging
-import _pickle as cPickle
 
-from bz2 import BZ2File
-from os.path import exists
 from flask import Flask, render_template, g
 from flask_socketio import SocketIO
+from app.databases.sqlite_db import SqliteDb
 from config import Config
+from config import DevelopmentConfig
 
 from flask.logging import default_handler
 from logging.handlers import RotatingFileHandler
 
+from bz2 import decompress
+from pickle import loads
+
+
 socketio = SocketIO()
 
 def open_pickled():
-    if exists(Config.NLP_PICKLE_FILE_NAME):
-        with BZ2File(Config.NLP_PICKLE_FILE_NAME, "rb") as matcherFile:
-            try:
-                return cPickle.load(matcherFile)
-            except FileNotFoundError as err:
-                raise err
+    db = SqliteDb(DevelopmentConfig.SQLITE_DATABASE_URI)
+    if db:
+        pickled = db.get('select data from nlp_pickle order by id desc limit 1')[0][0]
+        uncompressed_pickle = decompress(pickled)
+        return loads(uncompressed_pickle)
 
 global_matcher = open_pickled()
 
