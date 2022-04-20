@@ -1,6 +1,5 @@
 from nis import match
 import click
-import _pickle as cPickle
 from bz2 import BZ2File
 from spacy import blank
 from spacy.matcher import PhraseMatcher
