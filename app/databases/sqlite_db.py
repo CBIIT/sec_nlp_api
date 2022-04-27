@@ -18,9 +18,9 @@ class SqliteDb:
         curr.execute(query)
         return curr.fetchall()
 
-    def save(self, query: str, data: Any) -> None:
+    def save(self, query: str, data: tuple) -> None:
         curr = self.db.cursor()
-        curr.execute(query, (data,))
+        curr.execute(query, data)
         self.db.commit()
 
     def __enter__(self):
@@ -28,6 +28,9 @@ class SqliteDb:
         self.connection.row_factory = sqlite3.Row
         self.cursor: sqlite3.Cursor = self.connection.cursor()
         return self
+    
+    def __exit__(self, exc_type, exc_value, traceback):
+        pass
 
     def safe_sql(self, query: str) -> str:
         return query

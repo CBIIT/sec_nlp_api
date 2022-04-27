@@ -3,9 +3,7 @@ import logging
 
 from flask import Flask, render_template, g
 from flask_socketio import SocketIO
-from app.databases.sqlite_db import SqliteDb
-from config import Config
-from config import DevelopmentConfig
+from config import Config, DevelopmentConfig
 
 from flask.logging import default_handler
 from logging.handlers import RotatingFileHandler
@@ -13,13 +11,24 @@ from logging.handlers import RotatingFileHandler
 from bz2 import decompress
 from pickle import loads
 
+from app.databases.postgres_db import PostgresDb
+from psycopg2 import connect
+
 
 socketio = SocketIO()
 
 def open_pickled():
-    db = SqliteDb(DevelopmentConfig.SQLITE_DATABASE_URI)
+    db = PostgresDb(connection=
+        connect(
+            host=DevelopmentConfig.POSTGRESQL_HOST,
+            port=DevelopmentConfig.POSTGRESQL_PORT,
+            database=DevelopmentConfig.POSTGRESQL_DATABASE_NAME,
+            user=DevelopmentConfig.POSTGRESQL_USERNAME,
+            password=DevelopmentConfig.POSTGRESQL_PASSWORD
+        )   
+    )
     if db:
-        pickled = db.get('select data from nlp_pickle order by id desc limit 1')[0][0]
+        pickled = db.get(Config.NLP_PICKLE_SQL)[0][0]
         uncompressed_pickle = decompress(pickled)
         return loads(uncompressed_pickle)
 

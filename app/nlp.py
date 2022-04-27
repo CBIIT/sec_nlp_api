@@ -1,13 +1,12 @@
 from nis import match
 import click
-from bz2 import BZ2File
 from spacy import blank
 from spacy.matcher import PhraseMatcher
 from flask import (current_app, g)
 from flask.cli import with_appcontext
 from app.db import get_db
-from pickle import dumps as pickle_dumps
-from bz2 import compress as bz2_compress
+from pickle import (dumps, loads)
+from bz2 import (compress, decompress)
 
 def get_nlp():
     if "nlp" not in g:
@@ -16,11 +15,10 @@ def get_nlp():
 
 def get_matcher():
     if "nlp_matcher" not in g:
-        with BZ2File(current_app.config['NLP_PICKLE_FILE_NAME'], "rb") as matcherFile:
-            try:
-                g.nlp_matcher = cPickle.load(matcherFile)
-            except FileNotFoundError as err:
-                click.echo("Please initialize the PhraseMatcher.")
+        db = get_db()
+        pickled = db.get(current_app.config['NLP_PICKLE_SQL'])[0][0]
+        uncompressed_pickle = decompress(pickled)
+        g.nlp_matcher = loads(uncompressed_pickle)
     return g.nlp_matcher
 
 def clear_nlp(e=None):
@@ -39,7 +37,7 @@ def init_nlp():
         db = get_db()
         sql = '''select code, synonyms from ncit
         where (concept_status is null or (concept_status not like '%Obsolete%' and concept_status not like '%Retired%') ) 
-        /* and (lower(synonyms) like '%chemotherapy%' or lower(synonyms) like '%ecog%' or lower(synonyms) like '%white blood cell%') */
+        /* and (lower(synonyms) like '%chemotherapy%' or lower(s`       `nonyms) like '%ecog%' or lower(synonyms) like '%white blood cell%') */
         '''
         records = db.get(sql)
         ncit_syns_sql = '''select code, l_syn_name from ncit_syns'''
@@ -56,8 +54,8 @@ def init_nlp():
             patterns.append(nlp.make_doc(v[1]))
         matcher = PhraseMatcher(nlp.vocab, attr='LOWER')
         matcher.add("TerminologyList", patterns)
-        compressed_pickled_string = bz2_compress(pickle_dumps(matcher))
-        db.save("insert into nlp_pickle (data) values (?)", compressed_pickled_string)
+        compressed_pickled_string = compress(dumps(matcher))
+        db.save("insert into test_ncit_version (ncit_tokenizer) values (%s)", (compressed_pickled_string,))
 
 @click.command("init-nlp")
 @with_appcontext

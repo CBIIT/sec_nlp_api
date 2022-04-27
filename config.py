@@ -20,24 +20,25 @@ class Config:
 
     # Settings applicable to all environments
     SECRET_KEY = os.getenv('SECRET_KEY', default='A very terrible secret key.')
-    NLP_PICKLE_FILE_NAME = 'PhraseMatcher.pickle.bz2'
+    NLP_PICKLE_SQL = '''select ncit_tokenizer from test_ncit_version where active_version='Y' limit 1'''
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLITE_DATABASE_URI = os.path.join(basedir, 'nci_api.sqlite')
     POSTGRESQL_HOST = 'host'
     POSTGRESQL_PORT = 'port'
     POSTGRESQL_DATABASE_NAME = 'dbname'
-    POSTGRESQL_USERNAME = 'user'
+    POSTGRESQL_USERNAME = 'user' 
     POSTGRESQL_PASSWORD = 'password'
 
 class TestingConfig(Config):
     TESTING = True
     WTF_CSRF_ENABLED = False
     MAIL_SUPPRESS_SEND = True
-    SQLITE_DATABASE_URI = os.path.join(basedir, 'test.sqlite')
-
+    POSTGRESQL_HOST = 'host'
+    POSTGRESQL_PORT = 'port'
+    POSTGRESQL_DATABASE_NAME = 'dbname'
+    POSTGRESQL_USERNAME = 'user'
+    POSTGRESQL_PASSWORD = 'password'
 
 class ProductionConfig(Config):
     FLASK_ENV = 'production'
-    SQLITE_DATABASE_URI = os.getenv('PROD_DATABASE_URl', default=os.path.join(basedir, 'prod.sqlite'))

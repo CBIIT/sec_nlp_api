@@ -17,6 +17,11 @@ class PostgresDb(AbstractDatabase):
             cursor.execute(self.safe_sql(query))
             return cursor.fetchall()
 
+    def save(self, query: str, data: tuple) -> None:
+        curr = self.db.cursor()
+        curr.execute(query, data)
+        self.db.commit()
+
     def safe_sql(self, query: str) -> Union[str, None]:
         if query:
             query = query.replace('?', '%s')

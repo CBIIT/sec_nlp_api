@@ -3,22 +3,20 @@ import click
 
 from flask import (current_app, g)
 from flask.cli import with_appcontext
-from app.databases.sqlite_db import SqliteDb
-# from psycopg2 import connect
-# from app.databases.postgres_db import PostgresDb
+from psycopg2 import connect
+from app.databases.postgres_db import PostgresDb
 
 def get_db():
     if "db" not in g:
-        g.db = SqliteDb(current_app.config["SQLITE_DATABASE_URI"])
-        # g.db = PostgresDb(connection=
-        #     connect(
-        #         host=current_app.config["POSTGRESQL_HOST"],
-        #         port=current_app.config["POSTGRESQL_PORT"],
-        #         database=current_app.config["POSTGRESQL_DATABASE_NAME"],
-        #         user=current_app.config['POSTGRESQL_USERNAME'],
-        #         password=current_app.config["POSTGRESQL_PASSWORD"]
-        #     )   
-        # )
+        g.db = PostgresDb(connection=
+            connect(
+                host=current_app.config["POSTGRESQL_HOST"],
+                port=current_app.config["POSTGRESQL_PORT"],
+                database=current_app.config["POSTGRESQL_DATABASE_NAME"],
+                user=current_app.config['POSTGRESQL_USERNAME'],
+                password=current_app.config["POSTGRESQL_PASSWORD"]
+            )   
+        )
         g.db.row_factory = sqlite3.Row
     return g.db
 
