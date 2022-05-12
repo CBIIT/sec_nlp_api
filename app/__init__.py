@@ -14,6 +14,8 @@ from pickle import loads
 from app.databases.postgres_db import PostgresDb
 from psycopg2 import connect
 
+from nltk import download
+import spacy
 
 socketio = SocketIO()
 
@@ -33,6 +35,7 @@ def open_pickled():
         return loads(uncompressed_pickle)
 
 global_matcher = open_pickled()
+global_spispacy = spacy.load('en_core_sci_md')
 
 def create_app() -> Flask:
     app = Flask(__name__)
@@ -40,6 +43,8 @@ def create_app() -> Flask:
     CONFIG_TYPE = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
     app.config['SECRET_KEY'] = Config.SECRET_KEY
     app.config.from_object(CONFIG_TYPE)
+
+    download('vader_lexicon')
 
 
     register_db(app)
@@ -72,11 +77,11 @@ def register_nlp(app):
 
 def register_blueprints(app):
     # from app.blueprints.main import main_blueprint
-    # from app.blueprints.expression_generator import expression_blueprint
+    from app.blueprints.expression_generator import expression_blueprint
     from app.blueprints.tokenizer import tokenizer_blueprint
 
     # app.register_blueprint(main_blueprint)
-    # app.register_blueprint(expression_blueprint, url_prefix='/expression_generator')
+    app.register_blueprint(expression_blueprint, url_prefix='/expression_generator')
     app.register_blueprint(tokenizer_blueprint, url_prefix='/tokenizer')
 
 def register_globals(app):

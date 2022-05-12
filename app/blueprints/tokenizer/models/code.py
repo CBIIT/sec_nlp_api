@@ -1,6 +1,5 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, is_dataclass, field
 
-from dataclasses import dataclass, is_dataclass
 
 def nested_dataclass(*args, **kwargs):
 
@@ -33,9 +32,9 @@ def nested_dataclass(*args, **kwargs):
 
 @dataclass
 class Code:
-    system: str
     display: str
-    code: str = None
+    code: str = field(default=None)
+    system: str = field(default=None)
 
     def __post_init__(self):
         self.remove_duplicates_from_display()
