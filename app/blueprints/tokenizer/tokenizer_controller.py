@@ -14,7 +14,6 @@ def post():
         current_app.logger.info(f"POST[tokenizer] content is: {content}")
         codes = Codes(**content)
         db_cursor = get_db().cursor()
-        code_list = []
         new_coding = []
         db_codes = {}
         for code in codes.coding:
