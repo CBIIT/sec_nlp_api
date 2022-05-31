@@ -38,10 +38,15 @@ class Code:
     code: str = None
 
     def __post_init__(self):
+        self.curate_system()
         self.remove_duplicates_from_display()
         self.remove_words_three_characters_or_less()
         self.remove_number_strings()
         self.remove_units_of_messurements()
+
+    def curate_system(self):
+        if self.system:
+            self.system = self.system.split('/')[-1].upper()
 
     def remove_units_of_messurements(self):
         if self.display:
