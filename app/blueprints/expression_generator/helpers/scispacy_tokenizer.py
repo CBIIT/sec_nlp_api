@@ -9,5 +9,7 @@ class SciSpacyTokenizer:
         doc = self.nlp(sentence)
         doc_list = []
         for ent in doc.ents:
-            doc_list.append(ent.text)
+            print(f"{ent.text}: {ent.label_}")
+            if ent.label_ == 'DISEASE':
+                doc_list.append(ent.text)
         return doc_list

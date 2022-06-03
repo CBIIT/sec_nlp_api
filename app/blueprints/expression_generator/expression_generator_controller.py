@@ -26,6 +26,7 @@ def create():
         expressions = []
         for inclusion in criteria.inclusions:
             docs = SciSpacyTokenizer(global_spispacy).tokenize(inclusion)
+            
             docs = [doc.lower() for doc in docs]
             doc_string = ', '.join(docs)
             expression = Expression(
