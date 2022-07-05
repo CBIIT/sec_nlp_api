@@ -35,7 +35,7 @@ def open_pickled():
         return loads(uncompressed_pickle)
 
 global_matcher = open_pickled()
-global_spispacy = spacy.load('en_core_sci_md')
+global_spispacy = spacy.load('en_ner_bc5cdr_md')
 
 def create_app() -> Flask:
     app = Flask(__name__)

@@ -18,7 +18,6 @@ def post():
         db_codes = {}
         for code in codes.coding:
             if code.code and (code.system in ['ICD-9-CM', 'ICD-10-CM']):
-                print(code.code)
                 db_cursor.execute(get_c_code_from_curated_single(), (code.code,))
                 db_code = db_cursor.fetchone()
                 if db_code:
