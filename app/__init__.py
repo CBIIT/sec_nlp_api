@@ -9,13 +9,13 @@ from flask.logging import default_handler
 from logging.handlers import RotatingFileHandler
 
 from bz2 import decompress
-from pickle import loads
+from pickle import loads as pickle_loads
 
 from app.databases.postgres_db import PostgresDb
 from psycopg2 import connect
 
 from nltk import download
-import spacy
+from spacy import load as spacy_load
 
 socketio = SocketIO()
 
@@ -32,10 +32,10 @@ def open_pickled():
     if db:
         pickled = db.get(Config.NLP_PICKLE_SQL)[0][0]
         uncompressed_pickle = decompress(pickled)
-        return loads(uncompressed_pickle)
+        return pickle_loads(uncompressed_pickle)
 
 global_matcher = open_pickled()
-global_spispacy = spacy.load('en_ner_bc5cdr_md')
+global_spispacy = spacy_load('en_ner_bc5cdr_md')
 
 def create_app() -> Flask:
     app = Flask(__name__)
