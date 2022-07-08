@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 @dataclass
 class Expression:
-    codes: [str]
+    codes: [dict]
     sentiment_analysis: dict
     criteria: str
     expression: str
