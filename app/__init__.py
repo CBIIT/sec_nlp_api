@@ -17,6 +17,13 @@ from psycopg2 import connect
 from nltk import download
 from spacy import load as spacy_load
 
+from transformers import TFAutoModelForTokenClassification
+from transformers import AutoTokenizer
+from transformers import pipeline
+
+tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
+model = TFAutoModelForTokenClassification.from_pretrained(DevelopmentConfig.BERT_MODEL_LOCATION)
+
 socketio = SocketIO()
 
 def open_pickled():
@@ -36,6 +43,7 @@ def open_pickled():
 
 global_matcher = open_pickled()
 global_spispacy = spacy_load('en_ner_bc5cdr_md')
+global_bert = pipeline("ner", model=model, tokenizer=tokenizer)
 
 def create_app() -> Flask:
     app = Flask(__name__)

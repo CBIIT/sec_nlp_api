@@ -1,13 +1,17 @@
 
 from dataclasses import dataclass
 
+from app.blueprints.expression_generator.models.comparison import Comparison
+
 
 @dataclass
 class Expression:
     codes: [dict]
-    sentiment_analysis: dict
+    words: [str]
+    # sentiment_analysis: dict
     criteria: str
     expression: str
+    comparision: Comparison
 
     def __post_init__(self):
         if bool(self.codes):
